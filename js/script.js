@@ -9,9 +9,7 @@ main.onclick = function(event){
     }
 
     if(event.target.value == '.'){
-        if(output.innerHTML == ''){
-            output.innerHTML += '0.';
-        }else if(output.innerHTML.indexOf('.') < 0){
+        if(output.innerHTML.indexOf('.') < 0){
             output.innerHTML += '.';
         }
     }
@@ -24,8 +22,8 @@ main.onclick = function(event){
     let lastChar = outputString[outputString.length - 1];
     
 
-    if(event.target.value == '+' || event.target.value == '-' || event.target.value == 'x' || event.target.value == '/'){
-        if(lastChar === '+' || lastChar === '-' || lastChar === 'x' || lastChar === '/'){
+    if(event.target.value == '+' || event.target.value == '-' || event.target.value == 'x' || event.target.value == '÷'){
+        if(lastChar === '+' || lastChar === '-' || lastChar === 'x' || lastChar === '÷'){
             let newString = outputString.substring(0, outputString.length - 1) + event.target.value;
             output.innerHTML = newString;
         }else{
@@ -33,48 +31,35 @@ main.onclick = function(event){
         }
         
     }
-}
-result.addEventListener("click", function() {
 
-    var inputString = input.innerHTML;
-  
-    var numbers = inputString.split(/\+|\-|\×|\÷/g);
-  
-    var operators = inputString.replace(/[0-9]|\./g, "").split("");
-  
-    console.log(inputString);
-    console.log(operators);
-    console.log(numbers);
-    console.log("----------------------------");
-  
-    var divide = operators.indexOf("÷");
-    while (divide != -1) {
-      numbers.splice(divide, 2, numbers[divide] / numbers[divide + 1]);
-      operators.splice(divide, 1);
-      divide = operators.indexOf("÷");
+    if(event.target.value == '='){
+        let inputString = output.innerHTML;
+        let numbers = inputString.split(/\+|\-|\x|\÷/g);
+        let operators = inputString.replace(/[0-9]|\./g, "").split("");
+
+        function calc(op, el){
+            while (op != -1) {
+                el == '+' ? numbers.splice(op, 2, parseFloat(numbers[add]) + parseFloat(numbers[add + 1]))
+                : el == '-' ? numbers.splice(op, 2, numbers[op] - numbers[op + 1])
+                : el == '÷' ? numbers.splice(op, 2, numbers[op] / numbers[op + 1])
+                : el == '*' ? numbers.splice(op, 2, numbers[op] * numbers[op + 1])
+                :undefined;
+
+                operators.splice(op, 1);
+                op = operators.indexOf(el);
+            }
+        }
+      
+        let divide = operators.indexOf("÷");
+        let multiply = operators.indexOf("x");
+        let subtract = operators.indexOf("-");
+        let add = operators.indexOf("+");
+
+        calc(divide, '÷')
+        calc(multiply, '*')
+        calc(subtract, '-')
+        calc(add, '+')
+
+        output.innerHTML = numbers[0]; 
     }
-  
-    var multiply = operators.indexOf("×");
-    while (multiply != -1) {
-      numbers.splice(multiply, 2, numbers[multiply] * numbers[multiply + 1]);
-      operators.splice(multiply, 1);
-      multiply = operators.indexOf("×");
-    }
-    var subtract = operators.indexOf("-");
-    while (subtract != -1) {
-      numbers.splice(subtract, 2, numbers[subtract] - numbers[subtract + 1]);
-      operators.splice(subtract, 1);
-      subtract = operators.indexOf("-");
-    }
-  
-    var add = operators.indexOf("+");
-    while (add != -1) {
-      numbers.splice(add, 2, parseFloat(numbers[add]) + parseFloat(numbers[add + 1]));
-      operators.splice(add, 1);
-      add = operators.indexOf("+");
-    }
-  
-    input.innerHTML = numbers[0]; 
-  
-    resultDisplayed = true; 
-  });
+}
